@@ -4,34 +4,29 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using static System.Collections.Specialized.BitVector32;
 
 namespace ServerCore
 {
     class Program
     {
         static Listener _listener = new Listener();
-        static void OnacceptHandler(Socket socket)
+        static void OnacceptHandler(Socket clientSocket)
         {
             try
             {
                 Console.WriteLine("Listening...");
-                //손님입장
-                Socket clientSocket = socket;
-
-                // 받는다.(블로킹 함수)
-                byte[] recvBuff = new byte[1024];
-                int recvBytes = clientSocket.Receive(recvBuff);
-                string recvData = Encoding.UTF8.GetString(recvBuff, 0, recvBytes);
-                Console.WriteLine(recvData);
-
-                //전송 한다.(블로킹 함수)
                 byte[] sendBuffe = Encoding.UTF8.GetBytes("welcome to MMORPG Server !...");
-                clientSocket.Send(sendBuffe);
 
-                //예고 
-                clientSocket.Shutdown(SocketShutdown.Both);
-                //연결끊기
-                clientSocket.Close();
+                Session session = new Session();
+                session.Start(clientSocket);
+                session.sendData(sendBuffe);
+
+                Thread.Sleep(1000);
+
+                session.Disconneted();
+                session.Disconneted();
+                //session.Disconneted();
             }
             catch (Exception e)
             {

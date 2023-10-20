@@ -12,7 +12,7 @@ namespace ServerCore
         Socket _listenSocket;
         Action<Socket> _onacceptHandler; //클라이언트 접속 되면 접속 유무 콜백
 
-        
+
         public void init(IPEndPoint endPoint, Action<Socket> onacceptHandler)
         {
             //문지기
@@ -37,10 +37,10 @@ namespace ServerCore
             args.AcceptSocket = null;
             bool pending = _listenSocket.AcceptAsync(args);
             if (!pending) // pending true면 아직 접속된 클라가 없다는 뜻.
-                Onacceptcompleted(null,args);
+                Onacceptcompleted(null, args);
         }
 
-        void Onacceptcompleted(object sender , SocketAsyncEventArgs args)
+        void Onacceptcompleted(object sender, SocketAsyncEventArgs args)
         {
             if (args.SocketError == SocketError.Success)
             {

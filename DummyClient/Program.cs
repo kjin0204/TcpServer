@@ -28,9 +28,12 @@ namespace DummyClient
                     socket.Connect(endPoint);
                     Console.WriteLine($"Conneted to {socket.RemoteEndPoint.ToString()}");
 
-                    //보낸다.(블로킹 함수)
-                    byte[] sendbuff = Encoding.UTF8.GetBytes("Hellow world!");
-                    int sendByte = socket.Send(sendbuff);
+                    for (int i = 0; i < 5; i++)
+                    {
+                        //보낸다.(블로킹 함수)
+                        byte[] sendbuff = Encoding.UTF8.GetBytes($"Hellow world! {i}");
+                        int sendByte = socket.Send(sendbuff);
+                    }
 
                     //받는다.(블로킹 함수)
                     byte[] recvBuff = new byte[1024];
