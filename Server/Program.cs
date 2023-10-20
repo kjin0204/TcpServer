@@ -17,8 +17,19 @@ namespace Server
     {
         public override void OnConnected(EndPoint endPoint)
         {
-            byte[] sendBuffe = Encoding.UTF8.GetBytes("welcome to MMORPG Server !...");
+            //byte[] sendBuffe = Encoding.UTF8.GetBytes("welcome to MMORPG Server !...");
+
+            Knight knight = new Knight() { hp = 100, attack = 10 };
+            ArraySegment<byte> openSegment = SendBufferHelper.Open(4096);
+            byte[] buffer = BitConverter.GetBytes(knight.hp);
+            byte[] buffer2 = BitConverter.GetBytes(knight.attack);
+            Array.Copy(buffer, 0, openSegment.Array, openSegment.Offset, buffer.Length);
+            Array.Copy(buffer2, 0, openSegment.Array, openSegment.Offset + buffer.Length, buffer2.Length);
+            ArraySegment<byte> sendBuffe = SendBufferHelper.Close(buffer.Length + buffer2.Length);
+
             Send(sendBuffe);
+
+            //sendBuffe.Array[0] = 50;
 
             Thread.Sleep(1000);
 

@@ -36,7 +36,7 @@ namespace ServerCore
 
         void Completeconnect(object send, SocketAsyncEventArgs args)
         {
-            if(args.SocketError == SocketError.Success)
+            if (args.SocketError == SocketError.Success)
             {
                 Session session = _seesionFactory.Invoke();
                 session.Start(args.ConnectSocket);

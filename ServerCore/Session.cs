@@ -15,7 +15,7 @@ namespace ServerCore
         RecvBuffer _recvBuffer = new RecvBuffer(1024);
 
         List<ArraySegment<byte>> _pendingList = new List<ArraySegment<byte>>();
-        Queue<byte[]> _sendQue = new Queue<byte[]>();
+        Queue<ArraySegment<byte>> _sendQue = new Queue<ArraySegment<byte>>();
         SocketAsyncEventArgs _sendArgs = new SocketAsyncEventArgs();
         SocketAsyncEventArgs _receiveArgs = new SocketAsyncEventArgs();
         object _sendLock = new object();
@@ -48,11 +48,12 @@ namespace ServerCore
             _socket.Close();
         }
 
-        public void Send(byte[] sendBuffe)
+        public void Send(ArraySegment<byte> sendBuffe)
         {
             lock (_sendLock)
             {
                 _sendQue.Enqueue(sendBuffe);
+                //sendBuffe.Array[0] = 50;
                 if (_pendingList.Count == 0)
                     RegisterSend();
             }
@@ -66,8 +67,8 @@ namespace ServerCore
 
             while (_sendQue.Count > 0)
             {
-                byte[] buff = _sendQue.Dequeue();
-                _pendingList.Add(new ArraySegment<byte>(buff, 0, buff.Length));
+                ArraySegment<byte> buff = _sendQue.Dequeue();
+                _pendingList.Add(buff);
             }
             _sendArgs.BufferList = _pendingList;
 
