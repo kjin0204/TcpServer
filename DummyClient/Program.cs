@@ -4,7 +4,6 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
-using static System.Collections.Specialized.BitVector32;
 
 namespace DummyClient
 {
@@ -31,10 +30,12 @@ namespace DummyClient
         {
         }
 
-        public override void OnRecv(ArraySegment<byte> buffer)
+        public override int OnRecv(ArraySegment<byte> buffer)
         {
             string ReceiveData = Encoding.UTF8.GetString(buffer.Array, buffer.Offset, buffer.Count);
             Console.WriteLine($"[From Server] {ReceiveData}");
+
+            return buffer.Count;
         }
 
         public override void OnSend(int numOfBytes)

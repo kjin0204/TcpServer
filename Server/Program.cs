@@ -3,10 +3,15 @@ using System.Net;
 using System.Text;
 using System.Threading;
 using ServerCore;
-using static System.Collections.Specialized.BitVector32;
 
 namespace Server
 {
+
+    class Knight
+    {
+        public int hp;
+        public int attack;
+    }
 
     class GameSession : Session
     {
@@ -25,10 +30,12 @@ namespace Server
         {
         }
 
-        public override void OnRecv(ArraySegment<byte> buffer)
+        public override int OnRecv(ArraySegment<byte> buffer)
         {
             string ReceiveData = Encoding.UTF8.GetString(buffer.Array, buffer.Offset, buffer.Count);
             Console.WriteLine($"[From Client] {ReceiveData}");
+
+            return buffer.Count;
         }
 
         public override void OnSend(int numOfBytes)
