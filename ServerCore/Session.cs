@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 
 namespace ServerCore
 {
-    class Session
+    abstract class Session
     {
         Socket _socket;
         int _disconneted = 0; //커넥션 확인 하는 플레그
@@ -16,6 +17,11 @@ namespace ServerCore
         SocketAsyncEventArgs _sendArgs = new SocketAsyncEventArgs();
         SocketAsyncEventArgs _receiveArgs = new SocketAsyncEventArgs();
         object _sendLock = new object();
+
+        public abstract void OnConnected(EndPoint endPoint);
+        public abstract void OnRecv(ArraySegment<byte> buffer);
+        public abstract void OnSend(int numOfBytes);
+        public abstract void OnDisconnected(EndPoint endPoint);
 
         public void Start(Socket clientSocket)
         {
@@ -32,6 +38,9 @@ namespace ServerCore
         {
             if (Interlocked.CompareExchange(ref _disconneted, 1, 0) != 0)
                 return;
+
+            OnDisconnected(_socket.RemoteEndPoint);
+
             //예고 
             _socket.Shutdown(SocketShutdown.Both);
             //연결끊기
@@ -77,14 +86,14 @@ namespace ServerCore
                         _pendingList.Clear();
                         _sendArgs.BufferList = null;
 
-                        Console.WriteLine($"SendData Byte : {args.BytesTransferred}");
+                        OnSend(args.BytesTransferred);
 
                         if (_sendQue.Count > 0)
                             RegisterSend();
                     }
                     catch (Exception e)
                     {
-                        Console.WriteLine($"OnRecvCompleted Failed {e}");
+                        Console.WriteLine($"OnSendCompleted Failed {e}");
                     }
                 }
                 else
@@ -107,8 +116,7 @@ namespace ServerCore
             {
                 try
                 {
-                    string ReceiveData = Encoding.UTF8.GetString(args.Buffer, args.Offset, args.BytesTransferred);
-                    Console.WriteLine($"[From Client] {ReceiveData}");
+                    OnRecv(new ArraySegment<byte>(args.Buffer, args.Offset, args.BytesTransferred));
                     RegisterRecv();
                 }
                 catch (Exception e)
