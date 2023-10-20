@@ -7,7 +7,7 @@ using System.Threading;
 
 namespace ServerCore
 {
-    abstract class Session
+    public abstract class Session
     {
         Socket _socket;
         int _disconneted = 0; //커넥션 확인 하는 플레그
@@ -47,7 +47,7 @@ namespace ServerCore
             _socket.Close();
         }
 
-        public void sendData(byte[] sendBuffe)
+        public void Send(byte[] sendBuffe)
         {
             lock (_sendLock)
             {

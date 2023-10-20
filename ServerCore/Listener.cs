@@ -7,7 +7,7 @@ using System.Threading;
 
 namespace ServerCore
 {
-    class Listener
+    public class Listener
     {
         Socket _listenSocket;
         Func<Session> _seesionFactory; //클라이언트 접속 되면 접속 유무 콜백
