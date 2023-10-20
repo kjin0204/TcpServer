@@ -4,7 +4,6 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using static System.Collections.Specialized.BitVector32;
 
 namespace ServerCore
 {
@@ -15,7 +14,6 @@ namespace ServerCore
         {
             try
             {
-                Console.WriteLine("Listening...");
                 byte[] sendBuffe = Encoding.UTF8.GetBytes("welcome to MMORPG Server !...");
 
                 Session session = new Session();

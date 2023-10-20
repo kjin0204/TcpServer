@@ -30,6 +30,8 @@ namespace ServerCore
             args.Completed += new EventHandler<SocketAsyncEventArgs>(Onacceptcompleted);
             RegisterAccept(args);
 
+            Console.WriteLine("Listening...");
+
         }
 
         void RegisterAccept(SocketAsyncEventArgs args)
